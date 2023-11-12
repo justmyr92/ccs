@@ -177,6 +177,46 @@ app.post("/register", async (req, res) => {
     }
 });
 
+app.patch("/client/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            client_fname,
+            client_lname,
+            client_email,
+            client_contact,
+            client_street,
+            client_barangay,
+            client_city,
+        } = req.body;
+
+        console.log(req.body);
+
+        const query = `
+            UPDATE client_table
+            SET client_fname = $1, client_lname = $2, client_email = $3, client_contact = $4, client_street = $5, client_barangay = $6, client_city = $7
+            WHERE client_id = $8
+            RETURNING *;
+        `;
+
+        const result = await pool.query(query, [
+            client_fname,
+            client_lname,
+            client_email,
+            client_contact,
+            client_street,
+            client_barangay,
+            client_city,
+            id,
+        ]);
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 function generateClientId() {
     // Generate a unique client_id (you may need a more sophisticated approach)
     return "CL_" + Math.random().toString(36).substr(2, 9);
