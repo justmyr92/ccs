@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Swal from "sweetalert2";
+
 const Profilee = ({ clientData }) => {
     const [isEdit, setIsEdit] = useState(false);
 
