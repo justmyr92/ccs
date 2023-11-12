@@ -16,10 +16,18 @@ const Profile = () => {
     const [page, setPage] = useState("profile");
 
     useEffect(() => {
+        if (!customerID) {
+            window.location.href = "/login";
+        } else {
+            if (roleID === "ROLE001") {
+                window.location.href = "/";
+            }
+        }
+    }, []);
+
+    useEffect(() => {
         const fetchClientData = async () => {
             try {
-                //via post request
-
                 const response = await fetch("http://localhost:7723/client/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
