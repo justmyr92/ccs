@@ -83,7 +83,7 @@ const StatementCard = () => {
         <>
             {statements.map((statement, index) => (
                 <div
-                    className={`statement-card min-w-[23rem] h-[26rem] border bg-white
+                    className={`carousel-item max-w-[23rem] h-[26rem] border bg-white
                     ${
                         index === 0
                             ? "rounded-ss-lg"

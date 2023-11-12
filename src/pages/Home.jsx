@@ -206,7 +206,7 @@ const Home = () => {
                     </div>
 
                     <div className="statement py-10 w-full">
-                        <div className="statement-container flex items-start justify-start overflow-x-auto">
+                        <div className="statement-container  carousel carousel-center flex items-start justify-start overflow-x-auto">
                             <StatementCard />
                         </div>
                     </div>

@@ -19,7 +19,7 @@ const Profile = () => {
         if (!customerID) {
             window.location.href = "/login";
         } else {
-            if (roleID === "ROLE001") {
+            if (roleID != "ROLE001") {
                 window.location.href = "/";
             }
         }
