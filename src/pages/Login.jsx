@@ -11,7 +11,7 @@ const Login = () => {
         if (roleID === "ROLE001") {
             navigate("/");
         } else if (roleID === "ROLE002" || roleID === "ROLE003") {
-            navigate("/dashboard");
+            navigate("/");
         }
         console.log(roleID);
     }, [history]);

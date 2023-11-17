@@ -184,7 +184,8 @@ const Menu = () => {
     return (
         <section className="menu__section h-screen bg-blue-100 flex flex-row">
             <Sidebar roleID={roleID} />
-            <div className="menu__container p-5 flex flex-col w-full h-full overflow-y-auto">
+            <div className="menu__container p-5 flex flex-col h-full overflow-y-auto w-[80%]">
+                {/* Add Food Modal*/}
                 <dialog id="add_food_modal" className="modal">
                     <div className="modal-box">
                         <h3 className="font-bold text-lg">Add Food</h3>
@@ -201,7 +202,7 @@ const Menu = () => {
                                 <input
                                     type="text"
                                     placeholder="Food Name"
-                                    className="border border-gray-400 rounded-lg px-2 py-1"
+                                    className="input input-bordered w-full"
                                     value={foodName}
                                     name="foodName"
                                     onChange={(e) =>
@@ -211,7 +212,7 @@ const Menu = () => {
                                 <input
                                     type="text"
                                     placeholder="Food Type"
-                                    className="border border-gray-400 rounded-lg px-2 py-1"
+                                    className="input input-bordered w-full"
                                     onChange={(e) =>
                                         setFoodType(e.target.value)
                                     }
@@ -221,7 +222,7 @@ const Menu = () => {
                                 <input
                                     type="number"
                                     placeholder="Food Price"
-                                    className="border border-gray-400 rounded-lg px-2 py-1"
+                                    className="input input-bordered w-full"
                                     onChange={(e) =>
                                         setFoodPrice(e.target.value)
                                     }
@@ -231,7 +232,7 @@ const Menu = () => {
                                 <input
                                     type="text"
                                     placeholder="Food Description"
-                                    className="border border-gray-400 rounded-lg px-2 py-1"
+                                    className="input input-bordered w-full"
                                     onChange={(e) =>
                                         setFoodDescription(e.target.value)
                                     }
@@ -241,7 +242,7 @@ const Menu = () => {
                                 <input
                                     type="file"
                                     placeholder="Food Image"
-                                    className="border border-gray-400 rounded-lg px-2 py-1"
+                                    className="input input-bordered w-full"
                                     onChange={(e) =>
                                         setFoodImage(e.target.files[0])
                                     }
@@ -274,6 +275,7 @@ const Menu = () => {
                         </div>
                     </div>
                 </dialog>
+                {/* Update Food Modal*/}
                 <dialog id="update_food_modal" className="modal">
                     <div className="modal-box">
                         <h3 className="font-bold text-lg">Update Food</h3>
@@ -288,7 +290,7 @@ const Menu = () => {
                                 <input
                                     type="text"
                                     placeholder="Food Name"
-                                    className="border border-gray-400 rounded-lg px-2 py-1"
+                                    className="input input-bordered w-full"
                                     value={updateFoodName}
                                     onChange={(e) =>
                                         setUpdateFoodName(e.target.value)
@@ -297,7 +299,7 @@ const Menu = () => {
                                 <input
                                     type="text"
                                     placeholder="Food Type"
-                                    className="border border-gray-400 rounded-lg px-2 py-1"
+                                    className="input input-bordered w-full"
                                     onChange={(e) =>
                                         setUpdateFoodType(e.target.value)
                                     }
@@ -306,7 +308,7 @@ const Menu = () => {
                                 <input
                                     type="number"
                                     placeholder="Food Price"
-                                    className="border border-gray-400 rounded-lg px-2 py-1"
+                                    className="input input-bordered w-full"
                                     onChange={(e) =>
                                         setUpdateFoodPrice(e.target.value)
                                     }
@@ -315,7 +317,7 @@ const Menu = () => {
                                 <input
                                     type="text"
                                     placeholder="Food Description"
-                                    className="border border-gray-400 rounded-lg px-2 py-1"
+                                    className="input input-bordered w-full"
                                     onChange={(e) =>
                                         setUpdateFoodDescription(e.target.value)
                                     }
@@ -338,15 +340,15 @@ const Menu = () => {
                     </div>
                 </dialog>
                 <div className="table w-full p-4 bg-white rounded-lg shadow-lg">
-                    <div className="search-container flex justify-start items-center w-content mb-2">
+                    <div className="search-container flex justify-between items-center w-content mb-2">
                         <input
                             type="text"
-                            className="border border-gray-400 rounded-lg px-2 py-1"
+                            className="input input-bordered w-full max-w-xs"
                             placeholder="Search"
                             onChange={(e) => setSearch(e.target.value)}
                         />
                         <button
-                            className="btn"
+                            className="btn btn-primary"
                             onClick={() =>
                                 document
                                     .getElementById("add_food_modal")

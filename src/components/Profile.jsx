@@ -89,9 +89,9 @@ const Profilee = ({ clientData, setReload }) => {
     };
 
     return (
-        <div className="profile__main bg-blue-100 w-[100%] p-3">
-            <div className="flex justify-between">
-                <h3 className="text-2xl">Profile</h3>
+        <div className="profile__main bg-blue-100 w-[100%] p-3 h-[100%]">
+            <div className="flex justify-between mb-2 items-center">
+                <h3 className="text-3xl title">Profile</h3>
                 <button
                     onClick={() =>
                         Swal.fire({
@@ -108,11 +108,12 @@ const Profilee = ({ clientData, setReload }) => {
                             }
                         })
                     }
-                    className={`btn btn-active ${isEdit && "hidden"}`}
+                    className={`btn btn-primary ${isEdit && "hidden"}`}
                 >
                     <FontAwesomeIcon icon={faPenToSquare} />
                 </button>
             </div>
+            <hr className="mb-2 border-gray-400" />
             <div className="grid grid-cols-2 gap-1 mb-2">
                 <input
                     type="text"

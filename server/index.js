@@ -142,7 +142,10 @@ app.post("/register", async (req, res) => {
         let existingId;
 
         do {
-            client_id = generateClientId();
+            client_id =
+                "CL" +
+                Math.floor(Math.random() * (999999 - 100000 + 1)) +
+                100000;
             existingId = await pool.query(
                 "SELECT * FROM client_table WHERE client_id = $1",
                 [client_id]
@@ -176,11 +179,6 @@ app.post("/register", async (req, res) => {
         res.status(500).json({ error: "An unexpected error occurred" });
     }
 });
-
-function generateClientId() {
-    // Generate a unique client_id (you may need a more sophisticated approach)
-    return "CL_" + Math.random().toString(36).substr(2, 9);
-}
 
 app.post("/login", async (req, res) => {
     const { client_email, client_password } = req.body;
@@ -665,6 +663,42 @@ app.post("/transaction", async (req, res) => {
         res.status(500).json({ error: "An internal server error occurred" });
     }
 });
+
+app.patch(
+    "/update-reservation/:reservationId",
+    upload.single("file"),
+    async (req, res) => {
+        try {
+            const { reservationId } = req.params;
+            const { status, price } = req.body;
+
+            const fileData = "../src/assets/foods/" + req.file.filename;
+
+            // Update data in the database
+            const query = `
+        UPDATE reservation_table
+        SET status = $1, total_price = $2, proposal = $3
+        WHERE reservation_id = $4
+        RETURNING *;
+      `;
+
+            const values = [status, price, fileData, reservationId];
+            console.log(values, req.file);
+            const result = await pool.query(query, values);
+
+            res.status(200).json({
+                success: true,
+                data: result.rows[0],
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                success: false,
+                error: "Internal Server Error",
+            });
+        }
+    }
+);
 
 app.post("/reservation_food", async (req, res) => {
     try {

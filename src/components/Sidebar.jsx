@@ -62,7 +62,7 @@ const Sidebar = ({ roleID }) => {
     };
 
     return (
-        <aside className="sidebar h-screen bg-base-200 w-[30%]">
+        <aside className="sidebar h-screen bg-base-200 w-[20%]">
             <ul className="menu bg-base-200">
                 {links.map((link, index) => (
                     <li

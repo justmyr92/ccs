@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import Swal from "sweetalert2";
 
 const Quotation = () => {
     const [userID, setUserID] = useState(localStorage.getItem("userID"));
@@ -103,11 +104,56 @@ const Quotation = () => {
         getReservationDetails();
     }, []);
 
+    const [newStatus, setNewStatus] = useState("Approve"); // "Approve" or "Decline"
+    const [price, setPrice] = useState(0);
+    const [file, setFile] = useState(null);
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+
+        // Create FormData object to send files
+        const formData = new FormData();
+        formData.append("status", newStatus);
+        formData.append("price", price);
+        formData.append("file", file);
+
+        try {
+            const response = await fetch(
+                `http://localhost:7723/update-reservation/${reservation_id}`,
+                {
+                    method: "PATCH",
+                    body: formData,
+                }
+            );
+
+            if (response.ok) {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Reservation status updated",
+                    icon: "success",
+                    confirmButtonText: "Ok",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/quotation/" + reservation_id;
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Something went wrong",
+                    icon: "error",
+                    confirmButtonText: "Ok",
+                });
+            }
+        } catch (error) {
+            console.error("Error during form submission:", error);
+        }
+    };
     return (
         <section className="quotation__section h-screen bg-blue-100 flex flex-row">
             <Sidebar roleID={roleID} />
 
-            <div className="clients__container p-5 flex flex-col w-full h-full overflow-y-auto">
+            <div className="clients__container p-5 flex flex-col w-[80%] h-full overflow-y-auto">
                 <div className="w-full bg-white rounded-lg shadow relative p-5">
                     <table className="table">
                         <thead className="bg-gray-200">
@@ -223,7 +269,7 @@ const Quotation = () => {
                             }
                         </tbody>
                     </table>
-                    <div className="btn__container p-5 flex flex-row justify-end">
+                    <div className="btn__container p-5 flex flex-row justify-end gap-2">
                         <button
                             className="btn btn-primary"
                             onClick={() =>
@@ -231,9 +277,22 @@ const Quotation = () => {
                                     .getElementById("my_modal_1")
                                     .showModal()
                             }
+                            disabled={reservation.status === "Pending"}
                         >
                             Set Payment
                         </button>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() =>
+                                document
+                                    .getElementById("my_modal_2")
+                                    .showModal()
+                            }
+                            disabled={reservation.status !== "Pending"}
+                        >
+                            Update Status
+                        </button>
+
                         <dialog id="my_modal_1" className="modal">
                             <div className="modal-box">
                                 <h3 className="font-bold text-lg">
@@ -292,18 +351,131 @@ const Quotation = () => {
                                                 />
                                             </div>
                                         )}
-
                                         <div className="form-control w-full">
-                                            {/* submit */}
                                             <button
                                                 type="submit"
-                                                className="btn btn-primary" //submit
+                                                className="btn btn-primary"
+                                            >
+                                                Submit
+                                            </button>
+                                        </div>
+                                        <button
+                                            className="btn"
+                                            type="button"
+                                            onClick={() => {
+                                                document
+                                                    .getElementById(
+                                                        "my_modal_1"
+                                                    )
+                                                    .close();
+                                            }}
+                                        >
+                                            Close
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </dialog>
+                        <dialog id="my_modal_2" className="modal">
+                            <div className="modal-box">
+                                <h3 className="font-bold text-lg">
+                                    Update Status
+                                </h3>
+                                <div className="modal-action">
+                                    <form
+                                        method="dialog"
+                                        className="flex flex-col gap-4 w-full"
+                                        onSubmit={handleUpdate}
+                                    >
+                                        <div className="form-control w-full">
+                                            <label className="label">
+                                                <span className="label-text">
+                                                    Status
+                                                </span>
+                                            </label>
+                                            <select
+                                                className="select select-bordered w-full"
+                                                value={newStatus}
+                                                onChange={(e) =>
+                                                    setNewStatus(e.target.value)
+                                                }
+                                            >
+                                                <option value="Approve">
+                                                    Approve
+                                                </option>
+                                                <option value="Decline">
+                                                    Decline
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        {newStatus === "Approve" && (
+                                            <>
+                                                <div className="form-control w-full">
+                                                    <label className="label">
+                                                        <span className="label-text">
+                                                            Price
+                                                        </span>
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Price"
+                                                        className="input input-bordered w-full outline-none focus:outline-none"
+                                                        name="price"
+                                                        required
+                                                        value={price}
+                                                        onChange={(e) =>
+                                                            setPrice(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+
+                                                <div className="form-control w-full">
+                                                    <label className="label">
+                                                        <span className="label-text">
+                                                            File
+                                                        </span>
+                                                    </label>
+                                                    <input
+                                                        type="file"
+                                                        className="file-input input-bordered w-full outline-none focus:outline-none"
+                                                        name="file"
+                                                        required
+                                                        onChange={(e) =>
+                                                            setFile(
+                                                                e.target
+                                                                    .files[0]
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+
+                                        <div className="form-control w-full">
+                                            <button
+                                                type="submit"
+                                                className="btn btn-primary"
                                             >
                                                 Submit
                                             </button>
                                         </div>
 
-                                        <button className="btn">Close</button>
+                                        <button
+                                            className="btn"
+                                            type="button"
+                                            onClick={() => {
+                                                document
+                                                    .getElementById(
+                                                        "my_modal_2"
+                                                    )
+                                                    .close();
+                                            }}
+                                        >
+                                            Close
+                                        </button>
                                     </form>
                                 </div>
                             </div>
