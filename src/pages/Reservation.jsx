@@ -63,7 +63,9 @@ const Reservation = () => {
     const [contact, setContact] = useState("");
 
     const [eventName, setEventName] = useState("");
-    const [eventType, setEventType] = useState(event_type_param);
+    const [eventType, setEventType] = useState(
+        event_type_param === "More" ? "" : event_type_param
+    );
     const [eventDate, setEventDate] = useState("");
     const [eventTime, setEventTime] = useState("");
     const [eventVenue, setEventVenue] = useState("");
@@ -78,7 +80,7 @@ const Reservation = () => {
         "Event",
         "Food",
         "Summary",
-        "Billing",
+        "Terms and Conditions",
     ]);
 
     const stepIncrement = () => {

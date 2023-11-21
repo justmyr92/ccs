@@ -115,7 +115,7 @@ const Home = () => {
                                 </p>
                                 <div className="flex justify-center items-center gap-2">
                                     <Link
-                                        to="/reservation"
+                                        to="/reservation/More"
                                         className="make-reservation-btn py-3 hover:bg-sky-800 px-4 bg-sky-700 w-fit text-lg text-white shadow-sm"
                                     >
                                         Make a reservation{" "}

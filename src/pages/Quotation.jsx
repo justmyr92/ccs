@@ -17,6 +17,7 @@ const Quotation = () => {
     const [foods, setFoods] = useState([]);
     const [reservedFoods, setReservedFoods] = useState([]);
 
+    const { reservation_id } = useParams();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -43,6 +44,44 @@ const Quotation = () => {
 
             const result = await response.json();
 
+            if (response.ok) {
+                try {
+                    const response2 = await fetch(
+                        `http://localhost:7723/update-reservation-status/${reservation_id}`,
+                        {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ status: paymentStatus }),
+                        }
+                    );
+
+                    document.getElementById("my_modal_1").close();
+                    if (response2.ok) {
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Reservation status updated",
+                            icon: "success",
+                            confirmButtonText: "Ok",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "/transactions";
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Something went wrong",
+                            icon: "error",
+                            confirmButtonText: "Ok",
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error during form submission:", error);
+                }
+            }
+
             console.log(result);
 
             window.location.href = "/transactions";
@@ -50,8 +89,6 @@ const Quotation = () => {
             console.log(err);
         }
     };
-
-    const { reservation_id } = useParams();
 
     useEffect(() => {
         if (!userID) {
@@ -126,6 +163,7 @@ const Quotation = () => {
                 }
             );
 
+            document.getElementById("my_modal_2").close();
             if (response.ok) {
                 Swal.fire({
                     title: "Success!",
@@ -148,6 +186,7 @@ const Quotation = () => {
         } catch (error) {
             console.error("Error during form submission:", error);
         }
+        //
     };
     return (
         <section className="quotation__section h-screen bg-blue-100 flex flex-row">
@@ -277,7 +316,10 @@ const Quotation = () => {
                                     .getElementById("my_modal_1")
                                     .showModal()
                             }
-                            disabled={reservation.status === "Pending"}
+                            disabled={
+                                reservation.status === "Pending" ||
+                                reservation.status === "Completed"
+                            }
                         >
                             Set Payment
                         </button>

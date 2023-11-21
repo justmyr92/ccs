@@ -22,6 +22,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+app.get("/transactions", async (req, res) => {
+    try {
+        const result = await pool.query("SELECT * FROM transaction_table");
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 // ROUTES //
 app.get("/employees", async (req, res) => {
     try {
@@ -247,27 +257,6 @@ app.post("/login", async (req, res) => {
         res.status(500).json({ error: "An unexpected error occurred" });
     }
 });
-
-// onst [client, setClient] = useState({
-//     client_fname: "",
-//     client_lname: "",
-//     client_email: "",
-//     client_contact: "",
-//     client_street: "",
-//     client_barangay: "",
-//     client_city: "",
-// });
-
-// const response = await fetch(
-//     `http://localhost:7723/client/${clientData.client_id}`,
-//     {
-//         method: "PATCH",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(client),
-//     }
-// );
 
 app.patch("/client/:client_id", async (req, res) => {
     try {
@@ -558,6 +547,59 @@ app.get("/reservations/:reservation_id", async (req, res) => {
             "SELECT * FROM reservation_table WHERE reservation_id = $1",
             [reservation_id]
         );
+        console.log("reservation_id", result.rows[0]);
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.get("/reservations/client/:client_id", async (req, res) => {
+    try {
+        const { client_id } = req.params;
+        console.log(client_id);
+        const result = await pool.query(
+            //reservation table inner join event table
+            "SELECT * FROM reservation_table INNER JOIN event_table ON reservation_table.event_id = event_table.event_id WHERE client_id = $1",
+            [client_id]
+        );
+        console.log(result.rows[0]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.delete("/reservations/:reservation_id", async (req, res) => {
+    try {
+        const { reservation_id } = req.params;
+
+        //delete from reservation_food_table
+        const result2 = await pool.query(
+            "DELETE FROM reservation_food_table WHERE reservation_id = $1",
+            [reservation_id]
+        );
+
+        const result3 = await pool.query(
+            "DELETE FROM adds_on_table WHERE reservation_id = $1",
+            [reservation_id]
+        );
+
+        const result4 = await pool.query(
+            "DELETE FROM transaction_table WHERE reservation_id = $1",
+            [reservation_id]
+        );
+
+        const result5 = await pool.query(
+            "DELETE FROM event_table WHERE event_id = $1",
+            [reservation_id]
+        );
+        const result = await pool.query(
+            "DELETE FROM reservation_table WHERE reservation_id = $1",
+            [reservation_id]
+        );
         res.json(result.rows[0]);
     } catch (error) {
         console.error(error);
@@ -664,6 +706,33 @@ app.post("/transaction", async (req, res) => {
     }
 });
 
+//update status
+app.patch("/update-reservation-status/:reservationId", async (req, res) => {
+    try {
+        const { reservationId } = req.params;
+        const { status } = req.body;
+        const query = `
+    UPDATE reservation_table
+    SET status = $1
+    WHERE reservation_id = $2
+    RETURNING *;
+  `;
+        console.log(status, reservationId);
+        const result = await pool.query(query, [status, reservationId]);
+        console.log(result);
+        res.status(200).json({
+            success: true,
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: "Internal Server Error",
+        });
+    }
+});
+
 app.patch(
     "/update-reservation/:reservationId",
     upload.single("file"),
@@ -721,11 +790,56 @@ app.post("/reservation_food", async (req, res) => {
     }
 });
 
-// //reservation_food_table
-// reservation_food_id varchar (25) //PK
-// reservation_id varchar (25) //FK
-// food_id varchar (25) //FK
+app.get("/ratings/:reservation_id", async (req, res) => {
+    try {
+        const { reservation_id } = req.params;
+        const result = await pool.query(
+            "SELECT count(*) FROM rating_table WHERE reservation_id = $1",
+            [reservation_id]
+        );
+        console.log(result, reservation_id);
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+app.post("/ratings", async (req, res) => {
+    try {
+        const {
+            rating_id,
+            rating_value,
+            rating_comment,
+            reservation_id,
+            rating_date,
+        } = req.body;
 
+        const query = `
+        INSERT INTO rating_table
+        (rating_id, rating_value, rating_comment, reservation_id, rating_date)
+        VALUES ($1, $2, $3, $4, $5)
+      `;
+
+        const result = await pool.query(query, [
+            rating_id,
+            rating_value,
+            rating_comment,
+            reservation_id,
+            rating_date,
+        ]);
+
+        res.status(201).json({
+            success: true,
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: "Internal Server Error",
+        });
+    }
+});
 app.listen(process.env.PORT, () => {
     console.log(`Server is starting on port ${process.env.PORT}`);
     console.log("Grinding, grinding, grinding... ✊");

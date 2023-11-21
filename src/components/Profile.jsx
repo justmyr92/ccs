@@ -89,7 +89,7 @@ const Profilee = ({ clientData, setReload }) => {
     };
 
     return (
-        <div className="profile__main bg-blue-100 w-[100%] p-3 h-[100%]">
+        <div className="profile__main bg-blue-100 w-[100%] p-6 h-[100%]">
             <div className="flex justify-between mb-2 items-center">
                 <h3 className="text-3xl title">Profile</h3>
                 <button
