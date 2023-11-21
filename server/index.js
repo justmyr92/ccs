@@ -192,12 +192,14 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
     const { client_email, client_password } = req.body;
-
+    console.log(req.body);
     try {
         const existingClient = await pool.query(
             "SELECT * FROM client_table WHERE client_email = $1 OR client_contact = $1",
             [client_email]
         );
+
+        console.log(existingClient.rows.length);
 
         if (existingClient.rows.length !== 0) {
             const client = existingClient.rows[0];
@@ -205,6 +207,8 @@ app.post("/login", async (req, res) => {
                 client_password,
                 client.client_password
             );
+
+            console.log(isPasswordCorrect);
 
             if (isPasswordCorrect) {
                 res.json(client);
