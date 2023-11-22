@@ -37,7 +37,7 @@ const FoodCard = ({ food, foodID, setFoodID }) => {
                 />
             </div>
             <div className="food-card-body mt-20">
-                <h5 className="food-card-title title text-2xl text-center text-orange-500 mb-3">
+                <h5 className="food-card-title title text-xl text-center text-orange-500 mb-3">
                     {food.food_name}
                 </h5>
                 <p className="food-card-text text-sm text-center text-gray-500">

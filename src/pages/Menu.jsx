@@ -242,7 +242,7 @@ const Menu = () => {
                                 <input
                                     type="file"
                                     placeholder="Food Image"
-                                    className="input input-bordered w-full"
+                                    className="file-input input-bordered w-full"
                                     onChange={(e) =>
                                         setFoodImage(e.target.files[0])
                                     }

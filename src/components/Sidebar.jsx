@@ -30,7 +30,7 @@ const Sidebar = ({ roleID }) => {
                 label: "Announcements",
             },
             { path: "/menu", icon: <FaList />, label: "Menu" },
-            { path: "/events", icon: <FaRegCalendarCheck />, label: "Events" },
+            { path: "/staff", icon: <FaUsers />, label: "Staff" },
             { path: "/ratings", icon: <FaStar />, label: "Ratings" },
             {
                 path: "/reservations",

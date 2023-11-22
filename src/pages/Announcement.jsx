@@ -81,12 +81,12 @@ const Announcement = () => {
                 <div className="flex flex-row justify-between items-center">
                     <h1 className="text-2xl font-bold">Announcement</h1>
                     <button
-                        className="btn"
+                        className="btn btn-primary"
                         onClick={() =>
                             document.getElementById("my_modal_4").showModal()
                         }
                     >
-                        open modal
+                        Send Announcement
                     </button>
                 </div>
                 <dialog id="my_modal_4" className="modal">

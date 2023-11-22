@@ -122,10 +122,19 @@ const Navbar = ({ clientData }) => {
                                             className="dropdown-content z-[1] menu shadow bg-base-100 rounded-box w-52 text-base font-medium"
                                         >
                                             <li>
-                                                <a>Item 1</a>
+                                                <Link to="/profile">
+                                                    Profile
+                                                </Link>
                                             </li>
                                             <li>
-                                                <a>Item 2</a>
+                                                <Link to="/profile">
+                                                    Reservations
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link to="/profile">
+                                                    Ratings
+                                                </Link>
                                             </li>
 
                                             <div className="divider my-1"></div>

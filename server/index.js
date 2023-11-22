@@ -844,6 +844,99 @@ app.post("/ratings", async (req, res) => {
         });
     }
 });
+
+app.get("/ratings", async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT rating_table.*, reservation_table.client_fname, reservation_table.client_lname FROM rating_table INNER JOIN reservation_table ON rating_table.reservation_id = reservation_table.reservation_id"
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//select all payment from transacations
+
+app.get("/payment_amount", async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT SUM(transaction_total) FROM transaction_table"
+        );
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.get("/client_count", async (req, res) => {
+    try {
+        const result = await pool.query("SELECT COUNT(*) FROM client_table");
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//count all reservations
+
+app.get("/reservation_count", async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT COUNT(*) FROM reservation_table"
+        );
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//count all menu items
+
+app.get("/menu_count", async (req, res) => {
+    try {
+        const result = await pool.query("SELECT COUNT(*) FROM food_table");
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//sum all transaction_total by extracting month and by using current_year
+
+app.get("/transaction_sum/:month", async (req, res) => {
+    try {
+        const year = new Date().getFullYear();
+        const { month } = req.params;
+        const result = await pool.query(
+            "SELECT SUM(transaction_total) FROM transaction_table WHERE EXTRACT(MONTH FROM transaction_date) = $1 AND EXTRACT(YEAR FROM transaction_date) = $2",
+            [month, year]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.get("/status/:status", async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT COUNT(*) FROM reservation_table WHERE status = $1"
+        );
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`Server is starting on port ${process.env.PORT}`);
     console.log("Grinding, grinding, grinding... ✊");

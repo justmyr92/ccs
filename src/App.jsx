@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import Announcement from "./pages/Announcement";
 import Ratings from "./pages/Ratings";
 import Transaction from "./pages/Transacations";
+import Staff from "./pages/Staff";
 
 function App() {
     return (
@@ -37,6 +38,8 @@ function App() {
                 <Route path="/announcements" element={<Announcement />} />
                 <Route path="/ratings" element={<Ratings />} />
                 <Route path="/transactions" element={<Transaction />} />
+                {/* for /staff */}
+                <Route path="/staff" element={<Staff />} />
             </Routes>
         </BrowserRouter>
     );
